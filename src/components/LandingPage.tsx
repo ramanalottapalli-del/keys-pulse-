@@ -345,25 +345,6 @@ export default function LandingPage({ onStartTesting, setActiveTab }: LandingPag
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="mt-auto py-12 bg-gray-100 dark:bg-gray-950 border-t border-gray-200 dark:border-gray-800 transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between text-sm text-gray-500 dark:text-gray-400 font-sans">
-          <div className="flex items-center space-x-2 mb-4 md:mb-0">
-            <Keyboard className="h-5 w-5 text-blue-600" />
-            <span className="font-bold text-gray-900 dark:text-white">KeysPulse</span>
-            <span>| Free Keyboard Test Tool</span>
-          </div>
-          <div className="flex space-x-6 mb-4 md:mb-0">
-            <button id="foot-test" onClick={() => setActiveTab('test')} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Tester</button>
-            <button id="foot-about" onClick={() => setActiveTab('about')} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">About Layouts</button>
-            <button id="foot-faq" onClick={() => setActiveTab('faq')} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">FAQ</button>
-          </div>
-          <div>
-            &copy; 2026 keyspulse.com. Completely offline and private. No installation required.
-          </div>
-        </div>
-      </footer>
-
     </div>
   );
 }

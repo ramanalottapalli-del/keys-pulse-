@@ -12,6 +12,7 @@ import LandingPage from './components/LandingPage';
 import KeyboardTester from './components/KeyboardTester';
 import AboutPage from './components/AboutPage';
 import FAQPage from './components/FAQPage';
+import Footer from './components/Footer';
 import { ThemeType, SoundType } from './types';
 
 export default function App() {
@@ -94,6 +95,9 @@ export default function App() {
           </motion.div>
         </AnimatePresence>
       </main>
+
+      {/* Universal Footer featuring Developer Profile Spotlighting */}
+      <Footer setActiveTab={setActiveTab} />
     </div>
   );
 }
