@@ -1,0 +1,45 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile data mapped to their Firebase Auth UID",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The user's Auth UID" },
+        "email": { "type": "string", "description": "The user's primary email address" },
+        "displayName": { "type": "string", "description": "Display name of the user" },
+        "photoURL": { "type": "string", "description": "URL to profile avatar" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp of profile creation" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Timestamp of profile last update" }
+      },
+      "required": ["id", "email", "createdAt", "updatedAt"]
+    },
+    "TestSession": {
+      "title": "TestSession",
+      "description": "A saved keyboard keys test session record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique session ID" },
+        "userId": { "type": "string", "description": "Auth UID of the session owner" },
+        "layout": { "type": "string", "description": "Tested layout (FULL, TKL, 60, LAPTOP)" },
+        "totalKeys": { "type": "number", "description": "Total physical keys in layout" },
+        "testedKeysCount": { "type": "number", "description": "Number of successfully tested keys" },
+        "percentage": { "type": "number", "description": "Percentage of keys tested (0-100)" },
+        "wpm": { "type": "number", "description": "Words per minute in typing speed test" },
+        "accuracy": { "type": "number", "description": "Typing test accuracy percentage" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Timestamp when this session was saved" }
+      },
+      "required": ["id", "userId", "layout", "totalKeys", "testedKeysCount", "percentage", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Individual user profiles mapped by Auth UID"
+    },
+    "/sessions/{sessionId}": {
+      "schema": "TestSession",
+      "description": "Keyboard testing sessions saved by users"
+    }
+  }
+}

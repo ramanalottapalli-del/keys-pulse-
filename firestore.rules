@@ -1,0 +1,74 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net (Pillar 1)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global reusable security helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // Profile validation helper (Pillar 2)
+    function isValidUserProfile(data) {
+      return data.keys().hasAll(['id', 'email', 'createdAt', 'updatedAt'])
+          && data.id == request.auth.uid
+          && data.email is string && data.email.size() <= 256
+          && (data.displayName == null || (data.displayName is string && data.displayName.size() <= 128))
+          && (data.photoURL == null || (data.photoURL is string && data.photoURL.size() <= 512))
+          && data.createdAt == request.time
+          && data.updatedAt == request.time;
+    }
+
+    // Session validation helper (Pillar 2)
+    function isValidTestSession(data) {
+      return data.keys().hasAll(['id', 'userId', 'layout', 'totalKeys', 'testedKeysCount', 'percentage', 'createdAt'])
+          && data.id is string && data.id.size() <= 128
+          && data.userId == request.auth.uid
+          && data.layout is string && (data.layout == 'FULL' || data.layout == 'TKL' || data.layout == '60' || data.layout == 'LAPTOP')
+          && data.totalKeys is int && data.totalKeys > 0 && data.totalKeys <= 150
+          && data.testedKeysCount is int && data.testedKeysCount >= 0 && data.testedKeysCount <= data.totalKeys
+          && data.percentage is int && data.percentage >= 0 && data.percentage <= 100
+          && (!data.keys().hasAny(['wpm']) || (data.wpm is int && data.wpm >= 0 && data.wpm <= 500))
+          && (!data.keys().hasAny(['accuracy']) || (data.accuracy is int && data.accuracy >= 0 && data.accuracy <= 100))
+          && data.createdAt == request.time;
+    }
+
+    // Users Collection rules
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isOwner(userId) && isValidUserProfile(incoming());
+      allow update: if isOwner(userId) 
+                    && incoming().createdAt == existing().createdAt
+                    && incoming().updatedAt == request.time
+                    && incoming().email == existing().email;
+    }
+
+    // Sessions Collection rules
+    match /sessions/{sessionId} {
+      allow get: if isSignedIn() && existing().userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && isValidId(sessionId) && isValidTestSession(incoming());
+      allow delete: if isSignedIn() && existing().userId == request.auth.uid;
+    }
+  }
+}

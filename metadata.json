@@ -1,0 +1,6 @@
+{
+  "name": "KeysPulse Keyboard Tester",
+  "description": "Test every key on your keyboard instantly. Check for broken or unresponsive keys using this free online keyboard testing tool.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
